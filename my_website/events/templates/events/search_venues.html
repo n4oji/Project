@@ -8,12 +8,14 @@
 
 		<h1>You Searched For {{searched}}</h1>
 		<br>
-		{% for venue in venues %}
-			<a href="{% url 'show-venue' venue.id %}">{{ venue }}</a><br>
-		{% endfor %}
-	
-	{% else %}
-
+		<div style="width: fit-content">
+			<ul class="list-group list-group-flush">
+			{% for venue in venues %}
+				<li class="list-group-item"><a href="{% url 'show-venue' venue.id %}">{{ venue }}</a></li>
+			{% endfor %}
+			</ul>
+		{% else %}
+		</div>
 		<h1>You Forgot To Search For A Venue.</h1>
 
 	{% endif %}
