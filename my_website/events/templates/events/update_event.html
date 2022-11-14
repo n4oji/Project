@@ -9,6 +9,7 @@
 		{{ form.as_p }}
 		<br>
 		<input type="submit" value="Update" class="btn btn-secondary">
+		<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
 	</form>
 
 {% endblock %}
