@@ -4,7 +4,11 @@
 
 
 
-<h1>Events</h1>
+<h1>Events
+	<a href="{% url 'add-event' %}" type="button" class="btn btn-outline-primary" style="float: right;">
+		Add Event
+</a>
+</h1>
 
 {% for event in event_list %}
 
