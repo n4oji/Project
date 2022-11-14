@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
 
-
+#homapage
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
 	name = "Naoji"
 	month = month.capitalize()
@@ -30,11 +30,13 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 		"time" : time,
 	})
 
+#events list
 def all_events(request):
 	event_list = Event.objects.all().order_by('event_date')
 
 	return render(request, 'events/events_list.html', {'event_list': event_list})
 
+#adding a venue
 def add_venue(request):
 	submitted = False
 	if request.method == "POST":
@@ -50,16 +52,19 @@ def add_venue(request):
 
 	return render(request, 'events/add_venue.html', {'form': form, 'submitted': submitted})
 
+#venues list
 def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
 
 	return render(request, 'events/venue.html', {'venue_list': venue_list})
 
+#show specified venue
 def show_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
 
 	return render(request, 'events/show_venue.html', {'venue': venue})
 
+#search bar for venues
 def search_venues(request):
 	if request.method=="POST":
 		searched = request.POST['searched']
@@ -71,6 +76,7 @@ def search_venues(request):
 	else:
 		return render(request, 'events/search_venues.html', {})
 
+#updating a venue
 def update_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
 	form = VenueForm(request.POST or None, instance=venue)
@@ -81,6 +87,7 @@ def update_venue(request, venue_id):
 
 	return render(request, 'events/update_venue.html', {'venue': venue, 'form': form})
 
+#adding event
 def add_event(request):
 	submitted = False
 	if request.method == "POST":
@@ -96,7 +103,7 @@ def add_event(request):
 
 	return render(request, 'events/add_event.html', {'form': form, 'submitted': submitted})
 
-
+#update event
 def update_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	form = EventForm(request.POST or None, instance=event)
@@ -107,14 +114,31 @@ def update_event(request, event_id):
 
 	return render(request, 'events/update_event.html', {'event': event, 'form': form})
 
+#delete event
 def delete_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	event.delete()
 
 	return redirect('list-events')
 
+#delete venue
 def delete_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
 	venue.delete()
 
 	return redirect('list-venues')
+
+#generate a file with all venues
+def venue_text(request):
+	response = HttpResponse(content_type='text/plain')
+	response['Content-Disposition'] = 'attachment; filename=venues.txt'
+
+	venues = Venue.objects.all()
+
+	lines = []
+	for venue in venues:
+		lines.append(f"{venue.name}\n{venue.address}\n{venue.zip_code}\n{venue.phone}\n{venue.website}\n{venue.email_address}\n\n")
+
+	#escrever em txt
+	response.writelines(lines)
+	return response
