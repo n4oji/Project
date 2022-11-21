@@ -1,10 +1,16 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, FileResponse
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
+import csv
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+
 
 #homapage
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
@@ -142,3 +148,53 @@ def venue_text(request):
 	#escrever em txt
 	response.writelines(lines)
 	return response
+
+def venue_csv(request):
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename=venues.csv'
+
+	#create csv writer
+	writer = csv.writer(response)
+
+	venues = Venue.objects.all()
+
+	#add column headings to csv file
+	writer.writerow(['Venue Name', 'Address', 'Zip-Code', 'Phone', 'Website', 'Email'])
+
+	for venue in venues:
+		writer.writerow([venue.name, venue.address, venue.zip_code, venue.phone, venue.website, venue.email_address])
+
+	return response
+
+def venue_pdf(request):
+	#create bytestream
+	buf = io.BytesIO()
+	#create canvas
+	c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+	#create text object
+	textobj = c.beginText()
+	textobj.setTextOrigin(inch, inch)
+	textobj.setFont("Helvetica", 16)
+
+	venues = Venue.objects.all()
+
+	lines = []
+
+	for venue in venues:
+		lines.append(venue.name)
+		lines.append(venue.address)
+		lines.append(venue.zip_code)
+		lines.append(venue.phone)
+		lines.append(venue.website)
+		lines.append(venue.email_address)
+		lines.append(" ")
+
+	for line in lines:
+		textobj.textLine(line)
+
+	c.drawText(textobj)
+	c.showPage()
+	c.save()
+	buf.seek(0)
+
+	return FileResponse(buf, as_attachment=True, filename='venue.pdf')
