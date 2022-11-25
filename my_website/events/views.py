@@ -1,15 +1,18 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse, FileResponse
+from django.core.paginator import Paginator
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
-import csv
 import io
+#imports for print files , cvs and pdf
+import csv
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
+from django.core.paginator import Paginator
 
 
 #homapage
@@ -60,9 +63,20 @@ def add_venue(request):
 
 #venues list
 def list_venues(request):
-	venue_list = Venue.objects.all().order_by('name')
+	# venue_list = Venue.objects.all().order_by('name')
+	venue_list = Venue.objects.all()
 
-	return render(request, 'events/venue.html', {'venue_list': venue_list})
+	#set up pagination
+	p = Paginator(Venue.objects.all(), 5)
+	page = request.GET.get('page')
+	venues = p.get_page(page)
+	nums = "a" * venues.paginator.num_pages
+
+	return render(request, 'events/venue.html', {
+		'venue_list': venue_list,
+		'venues': venues,
+		'nums': nums
+		})
 
 #show specified venue
 def show_venue(request, venue_id):
@@ -149,6 +163,7 @@ def venue_text(request):
 	response.writelines(lines)
 	return response
 
+#create csv file with venues
 def venue_csv(request):
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename=venues.csv'
@@ -166,6 +181,7 @@ def venue_csv(request):
 
 	return response
 
+#create a pdf with venues
 def venue_pdf(request):
 	#create bytestream
 	buf = io.BytesIO()
@@ -198,3 +214,4 @@ def venue_pdf(request):
 	buf.seek(0)
 
 	return FileResponse(buf, as_attachment=True, filename='venue.pdf')
+

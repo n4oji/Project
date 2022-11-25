@@ -11,7 +11,7 @@
 	</a>
 </h1>
 <table class="table table-bordered table-striped table-hover">
-	{% for venue in venue_list %}
+	{% for venue in venues %}
 	<tr >
 		<td>
 			<a href="{% url 'show-venue' venue.id %}">{{ venue }}</a> 
@@ -24,5 +24,36 @@
 	{% endfor %}
 </table>
 
+<br>
+<!--
+{{venues}}<br>
+Has Previous: {{ venues.has_previous }}<br>
+Has Next: {{ venues.has_next }}<br>
+Current Page: {{ venues.number }}<br>
+Number of Pages: {{ venues.paginator.num_pages }}<br>
+<hr><br> 
+-->
+<nav aria-label="Page navigation example">
+	<ul class="pagination justify-content-center">
+	{% if venues.has_previous %}
+		<li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+		<li class="page-item"><a class="page-link" href="?page={{venues.previous_page_number}}">&lsaquo;</a></li>
+	{% endif %}
 
+	{% for i in nums %}
+		{% if forloop.counter  == venues.number %}
+		<li class="page-item" style="color: black;"><a class="page-link" style="color: black;" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+		{% else %}
+		<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+		{% endif %} 
+	{% endfor %}
+	<!-- <li class="page-item disabled"><a href="#" class="page-link">{{ venues.number }} of {{ venues.paginator.num_pages}}</a></li> -->
+
+	{% if venues.has_next %}
+		<li class="page-item"><a class="page-link" href="?page={{ venues.next_page_number }}">&rsaquo;</a></li>
+		<li class="page-item"><a class="page-link" href="?page={{venues.paginator.num_pages}}">&raquo; </a></li>
+	{% endif %}
+	</ul>
+</nav>
+<br><br><br><br><br><br><br>
 {% endblock %}
