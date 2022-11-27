@@ -52,6 +52,12 @@
         </li>
         {% else %}
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'register-user' %}">
+            Sign In
+          </a>
+        </li>
+
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'login-user' %}">
             Login
           </a>
