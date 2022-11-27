@@ -1,72 +1,63 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">My Website</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" href="{% url 'home' '2022' 'November' %}">
-            November
+            Calendar
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'list-events' %}">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Events
           </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'list-events' %}">Events List</a></li>
+            <li><a class="dropdown-item" href="{% url 'add-event' %}">Add Event</a></li>
+          </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'add-event' %}">
-            Add Event
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'list-venues' %}">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Venues
           </a>
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'add-venue' %}">
-            Add Venue
-          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'list-venues' %}">Venue List</a></li>
+            <li><a class="dropdown-item" href="{% url 'add-venue' %}">Add Venue</a></li>
+          </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'venue-text' %}">
-            Venue Text File
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Downloads
           </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'venue-text' %}">Venue Text File</a></li>
+            <li><a class="dropdown-item" href="{% url 'venue-csv' %}">Venue CSV File</a></li>
+            <li><a class="dropdown-item" href="{% url 'venue-pdf' %}">Venue PDF File</a></li>
+          </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'venue-csv' %}">
-            Venue CSV File
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'venue-pdf' %}">
-            Venue PDF File
-          </a>
-        </li>
-        
         {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout-user' %}">
-              Logout
-            </a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout-user' %}">
+            Logout
+          </a>
+        </li>
         {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login-user' %}">
-              Login
-            </a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login-user' %}">
+            Login
+          </a>
+        </li>
         {% endif %}
-        
+
       </ul>
       <form class="d-flex" method=POST action="{% url 'search-venues' %}">
         {% csrf_token %}
