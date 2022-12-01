@@ -2,16 +2,24 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+	{% if user == event.manager %}
 
-	<h1>Update Event</h1>
-	<br>
-	<form action="" method=POST>
-		{% csrf_token %}
-		{{ form.as_p }}
+		<h1>Update Event</h1>
 		<br>
-		<input type="submit" value="Update" class="btn btn-secondary">
-		<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
-	</form>
+		<form action="" method=POST>
+			{% csrf_token %}
+			{{ form.as_p }}
+			
+			<input type="submit" value="Update" class="btn btn-secondary">
+			<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
+		</form>
+	{% else %}
+		<h1>Acess Denied! </h1>
+		<p>Only <strong>{{event.manager}}</strong> Can Update This Event!</p>
+	{%endif%}
+
+
+
 {% else %}
 <h1>Sorry! You Must Be Logged In To View This Page... </h1>
 <a href="{% url 'login-user' %}">Login Here</a>
