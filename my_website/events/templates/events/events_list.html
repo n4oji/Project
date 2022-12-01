@@ -7,34 +7,43 @@
 <h1>Events
 	<a href="{% url 'add-event' %}" type="button" class="btn btn-outline-primary" style="float: right;">
 		Add Event
-</a>
+	</a>
 </h1>
 
 {% for event in event_list %}
 
 <div class="card">
-  <div class="card-header">{{ event }}</div>
-  <div class="card-body">
-    <h5 class="card-title">Venue: {{ event.venue }}</h5>
-    <p class="card-text">
-    	<ul style="list-style: none">
-		<li>{{ event.name }}</li>
-		<li>{{ event.event_date }}</li>
-		<li>{{ event.venue.address }}</li>
-		<li>{{ event.venue.website }}</li>
-		<li>{{ event.manager }}</li>
-		<li>{{ event.description }}</li>
-	</ul>
-    </p>
-    
-  </div>
-  <div class="card-footer text-muted">
-    <a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a>
-     <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
-  </div>
-</div>
+	<div class="card-header">{{ event }}</div>
+	<div class="card-body">
+		<h5 class="card-title">Venue: {{ event.venue }}</h5>
+		<p class="card-text">
+		<ul style="list-style: none">
+			<li><b>Nome</b>: {{ event.name }}</li>
+			<li><b>Data:</b> {{ event.event_date }}</li>
+			<li><b>Endereço:</b> {{ event.venue.address }}</li>
+			{% if event.venue.website %}
+			<li><b>Site:</b> {{ event.venue.website }}</li>
+			{% endif %}
+			{% if event.manager %}
+			<li><b>Gerente:</b> {{ event.manager }}</li>
+			{% endif %}
+			{% if event.manager %}
+			<li><b>Descrição:</b> {{ event.description }}</li>
+			{% endif %}
+		</ul>
+		</p>
 
-	
+	</div>
+	{% if user.is_authenticated %}
+	<div class="card-footer text-muted">
+		<a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a>
+		<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
+	</div>
+	{% endif %}
+</div>
+<br>
+
+
 {% endfor %}
 
 <br><br><br><br><br><br><br><br><br><br>
